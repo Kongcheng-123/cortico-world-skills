@@ -8,19 +8,22 @@ Cortico 的技能库与受限脚本执行 World 扩展。桌宠平时只在系�
 
 ## 安装与配置
 
+[![npm](https://img.shields.io/npm/v/cortico-world-skills.svg)](https://www.npmjs.com/package/cortico-world-skills)
+
 要求 Node.js 22 或更新版本，以及 Cortico World API 6。在 Cortico 部署的 `extensions/` 目录安装：
 
 ```powershell
 Set-Location "<Cortico 数据目录>\extensions"
-
-# 从 npm（发布后可用）
 corepack pnpm add --ignore-workspace cortico-world-skills
-
-# 或者直接从 GitHub（不依赖 npm）
-corepack pnpm add --ignore-workspace github:Kongcheng-123/cortico-world-skills
 ```
 
 装完启动 Cortico，在控制台左侧找到「技能与脚本」。
+
+**从 GitHub 装**（想跟最新提交，或者 npm 装不上时）：
+
+```powershell
+corepack pnpm add --ignore-workspace github:Kongcheng-123/cortico-world-skills
+```
 
 首次使用要填两个目录：
 
