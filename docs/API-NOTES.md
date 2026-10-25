@@ -185,3 +185,53 @@ pnpm describe:extension     # 从 describe 生成 describe.json
 ```
 
 `check:extension` 不调 `start()`，只验证 `create()` / `tools()` / `webUi()`。
+
+## 安装扩展时的坑（实测踩过）
+
+### 改 dependencies 会触发重装，运行中会撞 EPERM
+
+Cortico 靠 `extensions/package.json` 的 `dependencies` 枚举扩展。往里加一项，包管理器会重装依赖。
+
+**但如果 Cortico 正在运行**，它已经把各扩展的原生模块（`.node`）加载进内存了，重装时 rename 目录会失败：
+
+```
+[ERR_PNPM_EPERM] [importPackage .../node_modules/loopback-capture]
+EPERM: operation not permitted, rename 'loopback-capture_tmp_10528_7' -> 'loopback-capture'
+```
+
+后果很隐蔽：目录还在、`src/` 和 `.node` 都在，**只有 `package.json` 消失**，于是 Node 认为这个模块不存在，报「找不到模块」。表现就是某个扩展功能突然坏掉（本例是抓音频失效）。
+
+**正确顺序**：
+
+1. 先停掉 Cortico 进程
+2. 改 `extensions/package.json`
+3. 跑安装
+4. 再启动
+
+### 本地开发用 file: 协议，不要写版本号
+
+写 `"cortico-world-skills": "0.1.0"` 会让包管理器去 registry 找这个包，没发布就 404：
+
+```
+npm error 404 Not Found - GET https://registry.npmjs.org/cortico-world-skills
+```
+
+本地开发改成路径：
+
+```json
+"cortico-world-skills": "file:D:/path/to/your/cortico-world-skills"
+```
+
+装到 npm 上之后才换回版本号。
+
+### 拆 junction 不能递归删
+
+开发时常用 `mklink /J` 把扩展目录链进 `node_modules`。删的时候如果用 `Remove-Item -Recurse`，**可能顺着链接把真实项目删掉**。
+
+安全写法（只删链接本身）：
+
+```powershell
+[System.IO.Directory]::Delete($link)
+```
+
+删完立刻验证目标目录还在。
