@@ -1,8 +1,10 @@
-# 开发用不自测脚本
+# 开发用自测脚本，不随包分发
 scripts/
-examples/
-docs/
 
 # 本地配置
 *.local.json
 .env
+.env.*
+
+# 自测产物
+test-output/
