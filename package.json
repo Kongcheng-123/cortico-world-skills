@@ -1,0 +1,42 @@
+{
+  "name": "cortico-world-skills",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "给 Cortico / Coopanion 桌宠加一套做法库（skill）与受限脚本执行能力，常驻上下文只增加索引。",
+  "keywords": [
+    "cortico-world",
+    "cortico",
+    "coopanion",
+    "desktop-pet",
+    "companion",
+    "skill"
+  ],
+  "author": "空城",
+  "license": "MIT",
+  "main": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "files": [
+    "src",
+    "describe.json",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
+  "cortico": {
+    "kind": "world",
+    "api": 6,
+    "displayName": "做法库",
+    "tags": [
+      "companion",
+      "automation"
+    ],
+    "describe": "describe.json",
+    "locales": {
+      "en": {
+        "displayName": "Skills"
+      }
+    }
+  }
+}

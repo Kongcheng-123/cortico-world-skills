@@ -1,0 +1,8 @@
+# 开发用不自测脚本
+scripts/
+examples/
+docs/
+
+# 本地配置
+*.local.json
+.env

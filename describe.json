@@ -1,0 +1,45 @@
+{
+  "tools": [
+    {
+      "name": "skill_list",
+      "description": "列出所有做法文档的名字和触发条件。不确定该怎么做、或者要动手做一件事之前，先看这里有没有对应做法。",
+      "parameters": { "type": "object", "properties": {}, "required": [] },
+      "tags": ["read"],
+      "summary": { "zh": "列出所有可用的做法文档", "en": "List available skill documents" }
+    },
+    {
+      "name": "skill_read",
+      "description": "读一份做法文档的全文，照着做。名字先用 skill_list 查，传文件名或做法名都行。",
+      "parameters": {
+        "type": "object",
+        "properties": { "name": { "type": "string", "description": "做法名或者文件名" } },
+        "required": ["name"]
+      },
+      "tags": ["read"],
+      "summary": { "zh": "读一份做法的全文", "en": "Read one skill document in full" }
+    },
+    {
+      "name": "script_list",
+      "description": "列出当前能跑的脚本，以及当前是什么权限模式。",
+      "parameters": { "type": "object", "properties": {}, "required": [] },
+      "tags": ["read"],
+      "summary": { "zh": "列出可执行的脚本和权限模式", "en": "List runnable scripts and current mode" }
+    },
+    {
+      "name": "script_run",
+      "description": "跑一个脚本。白名单模式下传 alias；不限模式下传 command 和 args。跑之前先用 script_list 看有什么可跑。",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "alias": { "type": "string", "description": "白名单里的名字" },
+          "command": { "type": "string", "description": "不限模式下的可执行文件" },
+          "args": { "type": "array", "items": { "type": "string" }, "description": "不限模式下的参数" }
+        },
+        "required": []
+      },
+      "tags": ["act"],
+      "summary": { "zh": "执行一个脚本", "en": "Run a script" }
+    }
+  ],
+  "events": []
+}
