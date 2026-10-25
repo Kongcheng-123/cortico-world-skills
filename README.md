@@ -1,8 +1,55 @@
 # cortico-world-skills
 
-给 [Cortico](https://github.com/Pal-AI-Lab/Cortico) / Coopanion 桌宠加一套**做法库**（skill）和**受限脚本执行**。
+给 [Cortico](https://github.com/Pal-AI-Lab/Cortico) / Coopanion 桌宠加一套**技能库**（skill）和**受限脚本执行**。
 
-桌宠平时只在系统提示里带一份索引（几个做法名 + 一句话触发条件），需要时才把正文读进对话。所以它能记住很多「怎么做事」，但不会因此撑爆上下文。
+桌宠平时只在系统提示里带一份索引（几个技能名 + 一句话触发条件），需要时才把正文读进对话。所以它能记住很多「怎么做事」，但不会因此撑爆上下文。
+
+## 文档
+
+| 想看什么 | 去哪 |
+|---|---|
+| 写一份自己的技能 | [docs/SKILL-FORMAT.md](docs/SKILL-FORMAT.md) |
+| 权限模型、能拦什么拦不住什么 | [docs/SECURITY.md](docs/SECURITY.md) |
+| 改这个扩展的代码 | [docs/DEVELOPING.md](docs/DEVELOPING.md) |
+| 装不上、不显示、不生效 | [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) |
+| Cortico World API 长什么样 | [docs/API-NOTES.md](docs/API-NOTES.md) |
+
+## 五分钟跑起来
+
+```bash
+# 1. 装（先停掉 Cortico，运行中装会撞 EPERM 把包搞坏）
+cd <cortico 数据目录>/extensions
+#    在 package.json 的 dependencies 里加一行
+#    "cortico-world-skills": "file:/你的/项目/路径"
+npm install
+
+# 2. 开配置
+#    config.json 的 worlds 段加：
+#    "skills": { "enabled": true, "allowRoot": "你的脚本目录", "slot1": "..." }
+
+# 3. 启动 Cortico，控制台左侧应该出现「技能与脚本」
+```
+
+**验证装好了**：
+
+```bash
+curl -s http://127.0.0.1:17788/api/tool-schemas | grep -o 'skill_list\|skill_read\|script_list\|script_run'
+```
+
+四个都出来就行。
+
+**写第一份技能**：在 `<部署目录>/workspace/skills/` 丢一个 `.md`：
+
+```markdown
+---
+name: 泡茶
+when: 用户说想喝茶的时候
+---
+
+先烧水，85 度左右，绿茶别用沸水。
+```
+
+跟她说「你会哪些技能」，她应该会调 `skill_list` 报出来。
 
 ## 为什么需要它
 
