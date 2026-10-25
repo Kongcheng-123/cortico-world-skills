@@ -10,7 +10,7 @@
  */
 import { spawn } from 'node:child_process';
 import { resolve, sep } from 'node:path';
-import type { SkillsConfig, WhitelistEntry } from './config.ts';
+import { parseSlots, type SkillsConfig, type WhitelistEntry } from './config.ts';
 
 export interface RunResult {
   code: number | null;
@@ -116,9 +116,10 @@ export async function runWhitelisted(
   alias: string,
   cwd: string,
 ): Promise<RunResult | { error: string }> {
-  const entry = cfg.whitelist.find((w) => w.alias === alias.trim());
+  const list = parseSlots(cfg);
+  const entry = list.find((w) => w.alias === alias.trim());
   if (!entry) {
-    const names = cfg.whitelist.map((w) => w.alias).join('、') || '（一个都没配）';
+    const names = list.map((w) => w.alias).join('、') || '（一个都没配）';
     return { error: `没有叫「${alias}」的脚本。现在能跑的是：${names}` };
   }
 

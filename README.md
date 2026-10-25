@@ -34,14 +34,24 @@ pnpm add cortico-world-skills
   "skillDir": "",
   "allowRoot": "/path/to/your/workspace",
   "mode": "whitelist",
-  "whitelist": [],
   "timeoutMs": 60000,
-  "maxOutputChars": 4000
+  "maxOutputChars": 4000,
+  "slot1": "查看状态 | scripts/status.py | status | 看服务在不在跑",
+  "slot2": "",
+  "slot3": "",
+  "slot4": "",
+  "slot5": "",
+  "slot6": "",
+  "slot7": "",
+  "slot8": ""
 }
 ```
 
 - `skillDir` 留空时用 `<部署目录>/workspace/skills`
 - `allowRoot` 是脚本执行的根目录，路径校验以它为界
+- `slot1`..`slot8` 是白名单，格式 `别名 | 脚本路径 | 参数,参数 | 说明`
+
+**白名单为什么要用槽位**：Cortico 的配置表单只支持 `integer` / `number` / `boolean` / `string` / 二元数组，对象数组会渲染成只读。所以用 8 个字符串槽位表达列表，在控制台里能直接改。
 
 ## 写一份做法
 
@@ -71,9 +81,7 @@ when: 用户说一起看、开始听、玩剧情的时候
 只跑登记过的脚本。模型传的是 `alias`，不接受路径。
 
 ```json
-"whitelist": [
-  { "alias": "查看状态", "path": "scripts/status.py", "args": ["status"], "note": "看服务在不在跑" }
-]
+"slot1": "查看状态 | scripts/status.py | status | 看服务在不在跑"
 ```
 
 三道保护：
@@ -111,7 +119,7 @@ when: 用户说一起看、开始听、玩剧情的时候
 | `skillDir` | `""` | 做法目录，空则用 `workspace/skills` |
 | `allowRoot` | `""` | 脚本执行根目录 |
 | `mode` | `"whitelist"` | `whitelist` 或 `open` |
-| `whitelist` | `[]` | 白名单条目 |
+| `slot1`..`slot8` | `""` | 白名单槽位，格式 `别名 \| 路径 \| 参数 \| 说明` |
 | `timeoutMs` | `60000` | 单次执行超时 |
 | `maxOutputChars` | `4000` | 输出上限 |
 
