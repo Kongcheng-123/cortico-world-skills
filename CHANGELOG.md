@@ -1,5 +1,10 @@
 # 更新日志
 
+## 0.1.1
+
+**修的 bug**
+- 从 npm 或 GitHub 安装后 `docs/` 和 `examples/` 缺失，README 里的文档链接全部失效。`.npmignore` 原来只该排除自测脚本
+
 ## 0.1.0
 
 首个版本。

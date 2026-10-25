@@ -1,6 +1,6 @@
 {
   "name": "cortico-world-skills",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "type": "module",
   "description": "给 Cortico / Coopanion 桌宠加一套做法库（skill）与受限脚本执行能力，常驻上下文只增加索引。",
   "keywords": [
