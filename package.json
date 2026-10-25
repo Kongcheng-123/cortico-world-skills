@@ -27,7 +27,7 @@
   "cortico": {
     "kind": "world",
     "api": 6,
-    "displayName": "做法库",
+    "displayName": "技能与脚本",
     "tags": [
       "companion",
       "automation"
@@ -35,7 +35,7 @@
     "describe": "describe.json",
     "locales": {
       "en": {
-        "displayName": "Skills"
+        "displayName": "Skills & Scripts"
       }
     }
   }

@@ -22,7 +22,7 @@ export interface WhitelistEntry {
 
 export interface SkillsConfig {
   enabled: boolean;
-  /** 做法文档目录。留空则用 <botDir>/workspace/skills。 */
+  /** 技能文档目录。留空则用 <botDir>/workspace/skills。 */
   skillDir: string;
   /** 脚本执行的根目录，路径校验以它为界。 */
   allowRoot: string;

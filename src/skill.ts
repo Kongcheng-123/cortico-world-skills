@@ -1,5 +1,5 @@
 /**
- * 做法文档（skill）的扫描与索引。
+ * 技能文档（skill）的扫描与索引。
  *
  * 设计要点：
  * - 索引只含名字和一句话触发条件，正文一个字节都不进
@@ -67,7 +67,7 @@ export async function scanSkills(dir: string): Promise<SkillMeta[]> {
 
 /** 把元信息渲染成索引文本。每个做法一行。 */
 export function renderIndex(list: readonly SkillMeta[]): string {
-  if (!list.length) return '（还没有任何做法文档）';
+  if (!list.length) return '（还没有任何技能文档）';
   return list
     .map((s) => (s.when ? `- ${s.name}：${s.when}` : `- ${s.name}`))
     .join('\n');

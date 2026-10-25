@@ -1,8 +1,8 @@
 /**
- * 做法库 World 的实例。
+ * 技能与脚本 World 的实例。
  *
  * 四个工具：
- * - skill_list  列出做法名和触发条件（索引全文）
+ * - skill_list  列出技能名和触发条件（索引全文）
  * - skill_read  读某一份的正文
  * - script_list 列出能跑的脚本和当前权限模式
  * - script_run  跑脚本
@@ -54,7 +54,7 @@ export class SkillsWorld implements World {
     this.index = new SkillIndex(dir);
   }
 
-  /** 做法目录的绝对路径。 */
+  /** 技能目录的绝对路径。 */
   private get dir(): string {
     return this.cfg.skillDir || join(this.botDir, 'workspace', 'skills');
   }
@@ -75,7 +75,7 @@ export class SkillsWorld implements World {
       this.snapshot = await this.index.list();
       text = await this.index.text();
     } catch {
-      text = '（读取做法目录失败）';
+      text = '（读取技能目录失败）';
     }
     return { 'skills.index': text };
   }
@@ -85,7 +85,7 @@ export class SkillsWorld implements World {
       {
         name: 'skill_list',
         description:
-          '列出所有做法文档的名字和触发条件。不确定该怎么做、或者要动手做一件事之前，先看这里有没有对应做法。',
+          '列出所有技能文档的名字和触发条件。不确定该怎么做、或者要动手做一件事之前，先看这里有没有对应技能。',
         parameters: { type: 'object', properties: {}, required: [] },
         tags: ['read'],
         barrierAfter: true,
@@ -93,20 +93,20 @@ export class SkillsWorld implements World {
           const list = await this.index.list();
           this.snapshot = list;
           if (!list.length) {
-            return `做法目录是空的（${this.dir}）。没有可用的做法文档。`;
+            return `技能目录是空的（${this.dir}）。没有可用的技能文档。`;
           }
           const text = await this.index.text();
-          return `共 ${list.length} 份做法：\n\n${text}\n\n要看哪一份的全文，用 skill_read 传名字。`;
+          return `共 ${list.length} 份技能：\n\n${text}\n\n要看哪一份的全文，用 skill_read 传名字。`;
         },
       },
       {
         name: 'skill_read',
         description:
-          '读一份做法文档的全文，照着做。名字先用 skill_list 查，传文件名或做法名都行。',
+          '读一份技能文档的全文，照着做。名字先用 skill_list 查，传文件名或技能名都行。',
         parameters: {
           type: 'object',
           properties: {
-            name: { type: 'string', description: '做法名或者文件名' },
+            name: { type: 'string', description: '技能名或者文件名' },
           },
           required: ['name'],
         },
@@ -114,11 +114,11 @@ export class SkillsWorld implements World {
         barrierAfter: true,
         handler: async (args) => {
           const key = str(args, 'name');
-          if (!key) return '要给一个做法名。先用 skill_list 看看有哪些。';
+          if (!key) return '要给一个技能名。先用 skill_list 看看有哪些。';
           const found = await this.index.read(key);
           if (!found) {
             const text = await this.index.text();
-            return `没有找到「${key}」这份做法。现有的是：\n\n${text}`;
+            return `没有找到「${key}」这份技能。现有的是：\n\n${text}`;
           }
           return `# ${found.meta.name}\n\n${found.body}`;
         },
@@ -196,19 +196,10 @@ export class SkillsWorld implements World {
     ];
   }
 
-  /** 配置页：做法清单 + 脚本清单 + 可编辑项。 */
+  /** 配置页：用法说明 + 可编辑项。 */
   webUi() {
     const skills = this.snapshot;
     const scripts = parseSlots(this.cfg);
-    const modeText = this.cfg.mode === 'open' ? '不限（任意命令）' : '白名单（只跑登记过的）';
-
-    const skillBlock = skills.length
-      ? skills.map((s) => `· ${s.name}${s.when ? ` —— ${s.when}` : ''}`).join('\n')
-      : '（还没有做法文档）';
-
-    const scriptBlock = scripts.length
-      ? scripts.map((w) => `· ${w.alias}（${w.path}${w.args.length ? ` ${w.args.join(' ')}` : ''}）${w.note ? ` —— ${w.note}` : ''}`).join('\n')
-      : '（白名单是空的）';
 
     const slots: Record<string, unknown> = {};
     for (let i = 1; i <= SLOT_COUNT; i += 1) {
@@ -230,11 +221,17 @@ export class SkillsWorld implements World {
           owner: `world:${this.id}`,
           schema: {
             type: 'object',
-            title: '做法库',
+            title: '技能与脚本',
             description:
-              `当前 ${skills.length} 份做法：\n${skillBlock}\n\n`
-              + `脚本权限：${modeText}，共 ${scripts.length} 条：\n${scriptBlock}\n\n`
-              + `做法目录：${this.dir}\n改动做法文件立即生效；改权限模式和槽位也立即生效，改目录要重启。`,
+              '给桌宠两样东西：能按需查阅的技能文档，和受权限约束的脚本执行。\n\n'
+              + '【技能】在「技能目录」里放 .md 文件，一个文件一份技能。文件开头写 name（名字）和 when（什么时候该用），'
+              + '这两行会进她的上下文，每份约 30 字；正文平时不占地方，她用到时才读进来。\n'
+              + '现在有 ' + skills.length + ' 份，具体的名字和触发词她调 skill_list 就能列出来。\n\n'
+              + '【脚本】在下面 8 个槽位里登记，一行一条。登记了哪些、每行写了什么，她调 script_list 能看到。'
+              + '现在登记了 ' + scripts.length + ' 条。\n\n'
+              + '【权限】她只能跑登记过的，还是能跑任意命令，取决于权限模式。'
+              + '这个开关只有你能改，她手里没有切换它的入口。\n\n'
+              + '改技能文件、权限模式、槽位、超时都立即生效；改两个目录需要重启进程。',
             properties: {
               'worlds.skills.mode': {
                 type: 'string',
@@ -255,7 +252,7 @@ export class SkillsWorld implements World {
               },
               'worlds.skills.skillDir': {
                 type: 'string',
-                title: '做法目录',
+                title: '技能目录',
                 'x-path': { kind: 'directory' },
                 'x-hot': false,
                 description: '放 .md 做法文件的目录。留空用 <部署目录>/workspace/skills。',
@@ -286,12 +283,12 @@ export class SkillsWorld implements World {
       promptDocs: [
         {
           key: 'worlds.skills.envPrompt',
-          title: '做法库 · 环境提示词',
+          title: '技能与脚本 · 环境提示词',
           description: '告诉她有哪些做法可查、脚本怎么调用。',
           path: ENV_PROMPT_FILE,
           role: 'envPrompt' as const,
           vars: [
-            { name: 'skills.index', description: '做法索引，每个做法一行。' },
+            { name: 'skills.index', description: '技能索引，每个做法一行。' },
           ],
         },
       ],
@@ -299,7 +296,12 @@ export class SkillsWorld implements World {
   }
 
   async start(_host: WorldHost): Promise<void> {
-    // 没有常驻资源要起
+    // 预读一次快照，这样配置页一打开就有数据，不用等她调 skill_list
+    try {
+      this.snapshot = await this.index.list();
+    } catch {
+      this.snapshot = [];
+    }
   }
 
   async stop(): Promise<void> {
