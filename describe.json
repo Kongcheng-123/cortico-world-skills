@@ -2,21 +2,21 @@
   "tools": [
     {
       "name": "skill_list",
-      "description": "列出所有做法文档的名字和触发条件。不确定该怎么做、或者要动手做一件事之前，先看这里有没有对应做法。",
+      "description": "列出所有技能文档的名字和触发条件。不确定该怎么做、或者要动手做一件事之前，先看这里有没有对应技能。",
       "parameters": { "type": "object", "properties": {}, "required": [] },
       "tags": ["read"],
-      "summary": { "zh": "列出所有可用的做法文档", "en": "List available skill documents" }
+      "summary": { "zh": "列出所有可用的技能文档", "en": "List available skill documents" }
     },
     {
       "name": "skill_read",
-      "description": "读一份做法文档的全文，照着做。名字先用 skill_list 查，传文件名或做法名都行。",
+      "description": "读一份技能文档的全文，照着做。名字先用 skill_list 查，传文件名或技能名都行。",
       "parameters": {
         "type": "object",
-        "properties": { "name": { "type": "string", "description": "做法名或者文件名" } },
+        "properties": { "name": { "type": "string", "description": "技能名或者文件名" } },
         "required": ["name"]
       },
       "tags": ["read"],
-      "summary": { "zh": "读一份做法的全文", "en": "Read one skill document in full" }
+      "summary": { "zh": "读一份技能的全文", "en": "Read one skill document in full" }
     },
     {
       "name": "script_list",

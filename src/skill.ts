@@ -65,7 +65,7 @@ export async function scanSkills(dir: string): Promise<SkillMeta[]> {
   return out;
 }
 
-/** 把元信息渲染成索引文本。每个做法一行。 */
+/** 把元信息渲染成索引文本。每个技能一行。 */
 export function renderIndex(list: readonly SkillMeta[]): string {
   if (!list.length) return '（还没有任何技能文档）';
   return list
@@ -73,18 +73,15 @@ export function renderIndex(list: readonly SkillMeta[]): string {
     .join('\n');
 }
 
-/** 索引文本的字符数，用来盯上下文预算。 */
-export function indexSize(list: readonly SkillMeta[]): number {
-  return renderIndex(list).length;
-}
-
 /**
  * 带缓存的索引持有者。
  *
- * 每轮对话都可能问一次，所以不能每次都扫盘。用目录 mtime 判断要不要重建。
+ * 每轮对话都会问一次索引，所以不能每次都扫盘。用目录 mtime 判断要不要重建，
+ * 文本和列表共用同一次扫描结果，避免重复读文件。
  */
 export class SkillIndex {
-  private cached: string | null = null;
+  private cachedText: string | null = null;
+  private cachedList: SkillMeta[] | null = null;
   private lastMtime = -1;
 
   /** 显式字段，不用参数属性：Node 的 strip-only 模式不支持后者。 */
@@ -103,25 +100,37 @@ export class SkillIndex {
     }
   }
 
-  /** 拿索引文本，必要时重扫。 */
-  async text(): Promise<string> {
+  /**
+   * 目录变了就重扫，返回新列表；没变返回 null（调用方继续用缓存）。
+   *
+   * 这是唯一会真正读盘的方法，text() 和 list() 都走它。
+   */
+  async refreshIfStale(): Promise<SkillMeta[] | null> {
     const m = await this.mtime();
-    if (this.cached !== null && m === this.lastMtime) return this.cached;
+    if (this.cachedText !== null && m === this.lastMtime) return null;
 
-    const list = await scanSkills(this.dir);
-    this.cached = renderIndex(list);
+    const fresh = await scanSkills(this.dir);
+    this.cachedList = fresh;
+    this.cachedText = renderIndex(fresh);
     this.lastMtime = m;
-    return this.cached;
+    return fresh;
   }
 
-  /** 拿完整元信息（skill_read 要用文件路径）。 */
+  /** 拿索引文本，必要时重扫。 */
+  async text(): Promise<string> {
+    if (this.cachedText === null) await this.refreshIfStale();
+    return this.cachedText ?? '（还没有任何技能文档）';
+  }
+
+  /** 拿完整元信息（skill_read 要用文件名）。 */
   async list(): Promise<SkillMeta[]> {
-    return scanSkills(this.dir);
+    if (this.cachedList === null) await this.refreshIfStale();
+    return this.cachedList ?? [];
   }
 
   /** 按名字或文件名找一项。 */
   async find(key: string): Promise<SkillMeta | null> {
-    const list = await scanSkills(this.dir);
+    const list = await this.list();
     const k = key.trim();
     return (
       list.find((s) => s.name === k) ??
@@ -132,7 +141,7 @@ export class SkillIndex {
     );
   }
 
-  /** 读某个做法的正文（去掉 frontmatter）。 */
+  /** 读某个技能的正文（去掉 frontmatter）。 */
   async read(key: string): Promise<{ meta: SkillMeta; body: string } | null> {
     const meta = await this.find(key);
     if (!meta) return null;

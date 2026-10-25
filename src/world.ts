@@ -67,12 +67,16 @@ export class SkillsWorld implements World {
   /**
    * 环境段。
    *
-   * 只提供索引。做法正文不进这里，否则每一轮都要重算，prompt cache 直接失效。
+   * 只提供索引。技能正文不进这里，否则每一轮都要重算，prompt cache 直接失效。
+   *
+   * 索引本身按目录 mtime 缓存；技能列表也只在索引真的重建时才重新扫，
+   * 避免每轮对话都读一遍目录。
    */
   async envPromptVars(): Promise<Record<string, string>> {
     let text: string;
     try {
-      this.snapshot = await this.index.list();
+      const fresh = await this.index.refreshIfStale();
+      if (fresh) this.snapshot = fresh;
       text = await this.index.text();
     } catch {
       text = '（读取技能目录失败）';
