@@ -1,0 +1,42 @@
+name: 功能建议
+description: 想要新能力，或者现有行为不好用
+title: "[Feature] "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: 你想解决什么问题
+      description: 说场景比说方案有用。「我想让桌宠能……」比「加一个 XXX 参数」更容易讨论
+    validations:
+      required: true
+
+  - type: textarea
+    id: current
+    attributes:
+      label: 现在怎么绕过去的
+      description: 现在的做法是什么，哪里别扭
+    validations:
+      required: false
+
+  - type: textarea
+    id: idea
+    attributes:
+      label: 你的想法（可选）
+      description: 有具体方案可以说，但不必勉强
+    validations:
+      required: false
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: 涉及哪块
+      options:
+        - 技能机制（索引、读取、格式）
+        - 脚本执行（白名单、超时、输出）
+        - 配置页
+        - 上下文成本
+        - 文档
+        - 其他
+    validations:
+      required: true

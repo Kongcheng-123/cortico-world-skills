@@ -1,0 +1,75 @@
+name: Bug 报告
+description: 装不上、不显示、不生效、报错
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        先看一眼 [docs/TROUBLESHOOTING.md](https://github.com/Kongcheng-123/cortico-world-skills/blob/main/docs/TROUBLESHOOTING.md)，常见问题那里基本都有。
+
+  - type: input
+    id: cortico-version
+    attributes:
+      label: Cortico / Coopanion 版本
+      description: 控制台左上角或者关于页能看到
+      placeholder: 例如 0.2.9
+    validations:
+      required: true
+
+  - type: input
+    id: extension-version
+    attributes:
+      label: 本扩展版本
+      description: package.json 里的 version，或者扩展页显示的数字
+      placeholder: 例如 0.1.0
+    validations:
+      required: true
+
+  - type: dropdown
+    id: symptom
+    attributes:
+      label: 现象
+      options:
+        - 控制台里看不到「技能与脚本」
+        - 能看到，但配置页显示 0 份技能
+        - 桌宠不调用 skill_ / script_ 工具
+        - script_run 报「没有叫 XXX 的脚本」
+        - script_run 报「路径越出了允许范围」
+        - 执行超时或被截断
+        - 安装后别的扩展坏了
+        - 其他（下面说明）
+    validations:
+      required: true
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: 具体发生了什么
+      description: 操作步骤 + 期望结果 + 实际结果
+      placeholder: |
+        1. 我做了……
+        2. 我期望……
+        3. 实际……
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: 相关日志
+      description: |
+        `<Cortico 数据目录>/logs/core.log` 里相关的几行，以及配置页那段的截图或文字。
+        **贴之前把 API 密钥、私人路径删掉。**
+      render: text
+    validations:
+      required: false
+
+  - type: textarea
+    id: config
+    attributes:
+      label: worlds.skills 配置
+      description: config.json 里的这一段。**别贴 .env 内容。**
+      render: json
+    validations:
+      required: false
