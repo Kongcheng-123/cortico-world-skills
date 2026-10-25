@@ -12,7 +12,12 @@ Cortico 的技能库与受限脚本执行 World 扩展。桌宠平时只在系�
 
 ```powershell
 Set-Location "<Cortico 数据目录>\extensions"
+
+# 从 npm（发布后可用）
 corepack pnpm add --ignore-workspace cortico-world-skills
+
+# 或者直接从 GitHub（不依赖 npm）
+corepack pnpm add --ignore-workspace github:Kongcheng-123/cortico-world-skills
 ```
 
 装完启动 Cortico，在控制台左侧找到「技能与脚本」。
