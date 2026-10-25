@@ -27,7 +27,14 @@ Add to `config.json`:
   "skillDir": "",
   "allowRoot": "/path/to/your/workspace",
   "mode": "whitelist",
-  "whitelist": [],
+  "slot1": "status | scripts/status.py | status | check service",
+  "slot2": "",
+  "slot3": "",
+  "slot4": "",
+  "slot5": "",
+  "slot6": "",
+  "slot7": "",
+  "slot8": "",
   "timeoutMs": 60000,
   "maxOutputChars": 4000
 }
@@ -56,7 +63,7 @@ See [docs/SKILL-FORMAT.md](docs/SKILL-FORMAT.md).
 
 Two modes, switchable **only from the config file** — the model has no parameter to change it.
 
-- **whitelist** (default): only registered scripts, addressed by alias. Path traversal blocked, args fixed, output truncated, timeout enforced.
+- **whitelist** (default): only registered scripts (slot1..slot8), addressed by alias. Path traversal blocked, args fixed, output truncated, timeout enforced.
 - **open**: any command, but shell metacharacters rejected, timeout and truncation still apply.
 
 Read [docs/SECURITY.md](docs/SECURITY.md) before enabling open mode.
